@@ -2,8 +2,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const JogosSchema = new Schema({
-    nome: { type: String, required: true, unique: true },
-    preco: { type: Number, required: true },
+    titulo: { type: String, required: true, unique: true },
+    classificacao: { type: Number, required: true },
+    plataforma: { type: String },
+    modelo: { type: String, required: true },   //puzze, plataforma, rpg, ação, ...
+    numJogadores: { type: Number, required: true },
     criacao: { type: Date, default: Date.now }
 });
 

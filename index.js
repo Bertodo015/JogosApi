@@ -33,7 +33,7 @@ api.listen(portaApi, function() {
     console.log('API Online!');
 });
 
-const frutasController = require("./controller/jogos.js");
+const jogosController = require("./controller/jogos.js");
 api.get('/jogos', jogosController.listarJogos);
 //POST para adicionar
 api.post('/jogo', jogosController.adicionarJogo);
