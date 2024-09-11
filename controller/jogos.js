@@ -14,11 +14,11 @@ exports.listarJogos = async (requisition, resposta) => {
 exports.adicionarJogo = async (req, res) => {
     //req.body OU req.params OU req.query
     const novoJogo = req.headers;
-    if (!novoJogo.titulo || !novoJogo.classificacao || !novoJogo.plataforma || !novoJogo.modelo || !novoJogo.numJogadores) {
-        res.send({ msg: '[ERRO]: Informar titulo, classificação, plataforma e modelo!' })
+    if (!novoJogo.nome || !novoJogo.preco) {
+        res.send({ msg: '[ERRO]: Informar nome e preco!' })
     } else {
         try {
-            await Jogos.create(novoJogo);
+            await Frutas.create(novoJogo);
             res.send({ msg: '[SUCESSO]: Jogo adicionado!' });
         } catch (erro) {
             console.log(erro);
@@ -26,48 +26,37 @@ exports.adicionarJogo = async (req, res) => {
         }
 
     }
-
-    /** Pode ser assim
-     * return res.send({ msg:'[ERRO]: Informar nome e preco!' })
-        try {
-            await Frutas.create(novaFruta);
-            res.send({ msg:'[SUCESSO]: Produto adicionado!' });
-        } catch(erro) {
-            console.log(erro);
-            res.send({ msg: '[ERRO]: Erro ao cadastrar' });
-        }
-     */
 }
 
 exports.editarJogo = async (req, res) => {
     const jogo = req.headers;
-    if(!novoJogo.titulo || !novoJogo.classificacao || !novoJogo.plataforma || !novoJogo.modelo || !novoJogo.numJogadores) {
-        return res.send({ msg: '[ERRO]: Informar Informar titulo, classificação, plataforma, modelo e número de jogadores!' });
+    if (!jogo.nome || jogo.preco) {
+        return res.send({ msg: '[ERRO]: Informar nome e preco' });
     }
     try {
-        const jogoEditado = await Jogos.findOneAndUpdate({ titulo: jogo.titulo }, { classificacao: jogo.classificacao }, { plataforma: jogo.plataforma }, { modelo: jogo.modelo }, { numJogadores: jogo.numJogadores});
-        if(jogoEditado == null)
+        const jogoEditado = await Jogos.findOneAndUpdate({ nome: jogo.nome }, { preco: jogo.preco });
+        if (jogoEditado == null)
             res.send({ msg: '[AVISO]: Jogo não existe no BD!' })
         else
-            res.send({ msg: '[SUCESSO]: Jogo editado' })
-    } catch(erro) {
+            res.send({ msg: '[SUCESSO]: Jogo editado!' })
+    } catch (erro) {
         console.log(erro);
-        res.send({msg: '[ERRO]: Erro ao editar!', detalhes: erro });
+        res.send({ msg: '[ERRO]: Erro ao editar!', detalhes: erro });
     }
 }
 
 exports.removerJogo = async (req, res) => {
     const jogo = req.headers;
-    if(!jogo.titulo) 
-        return res.send({ msg: '[ERRO]: Informar titulo' });  
+    if (!jogo.nome)
+        return res.send({ msg: '[ERRO]: Informar nome!' });
     try {
-        const jogoEditado = await Jogos.findOneAndDelete({ titulo: jogo.titulo });
-        if(jogoEditado == null)
+        const jogoEditado = await Jogos.findOneAndDelete({ nome: jogo.nome });
+        if (jogoEditado == null)
             res.send({ msg: '[AVISO]: Jogo não existe no BD!' })
         else
-            res.send({ msg: '[SUCESSO]: Jogo removida!' })
-    } catch(erro) {
+            res.send({ msg: '[SUCESSO]: Jogo removido!' })
+    } catch (erro) {
         console.log(erro);
-        res.send({msg: '[ERRO]: Erro ao remover!', detalhes: erro });
+        res.send({ msg: '[ERRO]: Erro ao remover!', detalhes: erro });
     }
 }
