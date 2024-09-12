@@ -46,7 +46,7 @@ const autenticacao = require('./middlewares/autenticacao.js');
 
 api.post('/login', autenticacao.logar);
 api.post('/usuario', usuarioController.registrarUsuario);
-api.get('/jogos', autenticacao.autenticar, jogosController.listarJogo);
+api.get('/jogos', autenticacao.autenticar, jogosController.listarJogos);
 //POST para adicionar
 api.post('/jogo', autenticacao.autenticar, jogosController.adicionarJogo);
 //PUT para editar

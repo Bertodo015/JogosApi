@@ -14,8 +14,8 @@ exports.listarJogos = async (requisition, resposta) => {
 exports.adicionarJogo = async (req, res) => {
     //req.body OU req.params OU req.query
     const novoJogo = req.headers;
-    if (!novoJogo.nome || !novoJogo.preco) {
-        res.send({ msg: '[ERRO]: Informar nome e preco!' })
+    if (!novoJogo.titulo || !novoJogo.classificacao || !novoJogo.plataforma || !novoJogo.modelo || !novoJogo.numJogadores) {
+        res.send({ msg: '[ERRO]: Informar titulo, classificação, plataforma e modelo!' })
     } else {
         try {
             await Frutas.create(novoJogo);
@@ -30,11 +30,11 @@ exports.adicionarJogo = async (req, res) => {
 
 exports.editarJogo = async (req, res) => {
     const jogo = req.headers;
-    if (!jogo.nome || jogo.preco) {
-        return res.send({ msg: '[ERRO]: Informar nome e preco' });
+    if(!novoJogo.titulo || !novoJogo.classificacao || !novoJogo.plataforma || !novoJogo.modelo || !novoJogo.numJogadores) {
+        return res.send({ msg: '[ERRO]: Informar Informar titulo, classificação, plataforma, modelo e número de jogadores!' });
     }
     try {
-        const jogoEditado = await Jogos.findOneAndUpdate({ nome: jogo.nome }, { preco: jogo.preco });
+        const jogoEditado = await Jogos.findOneAndUpdate({ titulo: jogo.titulo }, { classificacao: jogo.classificacao }, { plataforma: jogo.plataforma }, { modelo: jogo.modelo }, { numJogadores: jogo.numJogadores});
         if (jogoEditado == null)
             res.send({ msg: '[AVISO]: Jogo não existe no BD!' })
         else
@@ -47,10 +47,10 @@ exports.editarJogo = async (req, res) => {
 
 exports.removerJogo = async (req, res) => {
     const jogo = req.headers;
-    if (!jogo.nome)
-        return res.send({ msg: '[ERRO]: Informar nome!' });
+    if (!jogo.titulo)
+        return res.send({ msg: '[ERRO]: Informar titulo!' });
     try {
-        const jogoEditado = await Jogos.findOneAndDelete({ nome: jogo.nome });
+        const jogoEditado = await Jogos.findOneAndDelete({ titulo: jogo.titulo });
         if (jogoEditado == null)
             res.send({ msg: '[AVISO]: Jogo não existe no BD!' })
         else
