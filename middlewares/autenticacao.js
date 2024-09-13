@@ -1,56 +1,40 @@
 require('dotenv').config();
-
-//cria o tonken com essa chave, e abre também       tanto para criar, quanto para desfazer
 const chavePrivada = process.env.CHAVE_JWT || '';
-
 const jwt = require('jsonwebtoken');
-
 const Usuario = require('../model/usuario.js');
 const bcrypt = require('bcrypt');
 
-//requisição, resposta e o next("segue o fluxo normal aí")
 exports.autenticar = (req, res, next) => {
-    console.log('Entrou no middleware de autenticação...');
+  const token = req.headers['authorization'];
 
-    //chave de acesso que será definida (*posso definir a duração)
-    const token = req.headers['authorization'];
-
-//{ expiresIn: '20000' } para a chave expirar
-    jwt.verify(token, chavePrivada, { expiresIn: '2000' }, (erro) => {
-        if (erro)
-            return res.status(401).send({ msg: 'Token inválido ou expirado' });
-        next();
-    });
+  jwt.verify(token, chavePrivada, (erro, informacoesUsuario) => {
+    if (erro)
+      return res.status(401).send({ msg: 'Token inválido ou expirado!' });
+    next();
+  });
 }
 
-//---
 exports.logar = async (req, res, next) => {
-    //const usuario = req.headers.usuario;
-    //const senha = req.headers.senha;
-    //as duas linhas de cima podem ser representadas dessa forma
-    const { usuario, senha } = req.headers;
+  /*const usuario = req.headers.usuario;
+  const senha = req.headers.senha;*/
 
-    const usuarioExisteBD = await Usuario.findOne({ usuario: usuario });
+  const { usuario, senha } = req.headers;
 
-    if (!usuarioExisteBD)
-        return res.status(400).send({ msg: '[ERRO]: Usuário não existe!' });
+  const usuarioBD = await Usuario.findOne({ usuario: usuario });
+  if (!usuarioBD)
+    return res.status(400).send({ msg: 'Usuário não existe' });
 
-    //se ele passar da linha anterior
-    //                                          //123               //$2s4sd564s3
-    const senhaCorreta = await bcrypt.compare(senha, usuarioExisteBD.senha);
-    if (senhaCorreta) { //senhaCorreta == true      (variáveis buleanas já possuem valor de verdadeiro ou falso)
-        //pode deletar uma propriedade de um objeto
-        delete usuarioExisteBD._id;
-        delete usuarioExisteBD.senha;
+  const senhaCorreta = await bcrypt.compare(senha, usuarioBD.senha);
+  if (senhaCorreta) {
+    delete usuarioBD._id;
+    delete usuarioBD.senha;
 
-        //se a senha está correta, criar o token para o usuário
-        jwt.sign(usuarioExisteBD.toJSON(), chavePrivada, { expiresIn: '1d' }, (erro, token) => {
-            if (erro)
-                return res.status(500).send({ msg: '[ERRO]: Erro ao gerar JWT!' });
-            //não é necessário o 'else', pois há o 'return'
-            res.status(200).send({ token: token });
-        });
-    } else {
-        res.status(401).send({ msg: '[ERRO]: Usuário ou senha errados!' });
-    }
+    jwt.sign(usuarioBD.toJSON(), chavePrivada, { expiresIn: '30m' }, (erro, token) => {
+      if (erro)
+        return res.status(500).send({ msg: 'Erro ao gerar JWT!' });
+      res.status(200).send({ token: token });
+    });
+  } else {
+    res.status(401).send({ msg: 'Usuário ou Senha errados!' });
+  }
 }

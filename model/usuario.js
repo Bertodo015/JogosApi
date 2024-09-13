@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema; //Schema associado mais a estrutura
+const Schema = mongoose.Schema;
 
 const UsuarioSchema = new Schema({
-    usuario: { type: String, required: true, unique: true },    //não faz sentido ter mais de um usuário com o mesmo login
+    usuario: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     senha: { type: String, required: true }
 });
